@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learn_bloc_firebase/counter_bloc/counter_bloc.dart';
@@ -48,19 +49,55 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Current number:',
+            BlocSelector<CounterBloc, CounterState, bool>(
+              selector: (state) => state.counter >= 3 ? true : false,
+              builder: (context, state) => Center(
+                child: Container(
+                  color: state ? Colors.green : Colors.red,
+                  width: 200,
+                  height: 200,
+                ),
+              ),
             ),
             const SizedBox(height: 12),
-            BlocBuilder<CounterBloc, CounterState>(
-              buildWhen: (previous, current) {
-                return current.counter >= 5;
-              },
+            BlocConsumer<CounterBloc, CounterState>(
               builder: (context, state) => Text(
                 state.counter.toString(),
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
+              listener: (context, state) {
+                if (state.counter >= 5) {
+                  Flushbar(
+                    title: "It Works!",
+                    message: "Current number is: ${state.counter.toString()}",
+                    duration: const Duration(seconds: 3),
+                  ).show(context);
+                }
+              },
             ),
+            const SizedBox(height: 12),
+            // BlocListener<CounterBloc, CounterState>(
+            //   listener: (context, state) {
+            //     if (state.counter >= 5) {
+            //       Flushbar(
+            //         title: "It Works!",
+            //         message: "Current number is: ${state.counter.toString()}",
+            //         duration: const Duration(seconds: 3),
+            //       ).show(context);
+            //     }
+            //   },
+            //   child: const Text('Bloc Listener'),
+            // ),
+            // const SizedBox(height: 12),
+            // BlocBuilder<CounterBloc, CounterState>(
+            //   // buildWhen: (previous, current) {
+            //   //   return current.counter >= 5;
+            //   // },
+            //   builder: (context, state) => Text(
+            //     state.counter.toString(),
+            //     style: Theme.of(context).textTheme.headlineMedium,
+            //   ),
+            // ),
           ],
         ),
       ),
