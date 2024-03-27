@@ -1,6 +1,8 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:learn_bloc_firebase/color_bloc/color_bloc.dart';
+import 'package:learn_bloc_firebase/color_bloc/color_state.dart';
 import 'package:learn_bloc_firebase/counter_bloc/counter_bloc.dart';
 import 'package:learn_bloc_firebase/counter_bloc/counter_event.dart';
 import 'package:learn_bloc_firebase/counter_bloc/counter_state.dart';
@@ -14,8 +16,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CounterBloc()),
+        BlocProvider(create: (context) => ColorBloc()),
+      ],
       child: MaterialApp(
         title: 'Flutter BLOC & Firebase',
         theme: ThemeData(
@@ -49,16 +54,23 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BlocSelector<CounterBloc, CounterState, bool>(
-              selector: (state) => state.counter >= 3 ? true : false,
-              builder: (context, state) => Center(
-                child: Container(
-                  color: state ? Colors.green : Colors.red,
-                  width: 200,
-                  height: 200,
-                ),
+            BlocBuilder<ColorBloc, ColorState>(
+              builder: (context, state) => Container(
+                width: 200,
+                height: 200,
+                color: state.color,
               ),
             ),
+            // BlocSelector<CounterBloc, CounterState, bool>(
+            //   selector: (state) => state.counter >= 3 ? true : false,
+            //   builder: (context, state) => Center(
+            //     child: Container(
+            //       color: state ? Colors.green : Colors.red,
+            //       width: 200,
+            //       height: 200,
+            //     ),
+            //   ),
+            // ),
             const SizedBox(height: 12),
             BlocConsumer<CounterBloc, CounterState>(
               builder: (context, state) => Text(
@@ -107,6 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButton(
             onPressed: () {
               context.read<CounterBloc>().add(CounterDecrementEvent());
+              context.read<ColorBloc>().add(CounterDecrementEvent());
             },
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
@@ -115,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
           FloatingActionButton(
             onPressed: () {
               context.read<CounterBloc>().add(CounterIncrementEvent());
+              context.read<ColorBloc>().add(CounterIncrementEvent());
             },
             tooltip: 'Increment',
             child: const Icon(Icons.add),
