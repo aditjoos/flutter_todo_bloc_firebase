@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:learn_bloc_firebase/color_bloc/color_state.dart';
-import 'package:learn_bloc_firebase/counter_bloc/counter_event.dart';
+import 'package:learn_bloc_firebase/bloc/color_bloc/color_state.dart';
+import 'package:learn_bloc_firebase/bloc/counter_bloc/counter_event.dart';
 
 class ColorBloc extends Bloc<CounterEvent, ColorState> {
   ColorBloc() : super(ColorInitialState()) {
